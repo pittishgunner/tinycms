@@ -1,0 +1,6 @@
+.formsWrapper{margin:0 auto; border:solid 1px #ccc; border-radius:6px; padding:10px; background:#F0F0F0;}
+.formRow {}
+.formLabel,.formInput{display:inline-block;vertical-align:top; min-height:24px; margin:0 0 4px 0;}.formLabel{width:190px; padding:4px 10px 0 0; text-align:right;}.formInput {width:400px;}
+.formInput input[type="text"] { width:390px;}.formInput textarea { width:388px; height:60px;}.formInput select { width:394px;}
+.messageErrors { margin:0 0 4px 0; padding:0 0 0 200px; color:#f00; }
+.hasError .formLabel { color:#f00; }

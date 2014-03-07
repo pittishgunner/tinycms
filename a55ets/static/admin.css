@@ -1,0 +1,48 @@
+#AdminWrapper {  font-family:Arial; font-size:14px; width:988px; }
+#AdminWrapper a{color:#f00;text-decoration:none; }
+.error { color:#f00; font-weight:bold; margin:4px 0;border:solid 1px #f00; padding:4px 12px; border-radius:5px; background:#ffd5d5;  }
+.success { color:#339900; font-weight:bold; margin:4px 0;border:solid 1px #339900; padding:4px 12px; border-radius:5px; background:#e7ffdb;  }
+.info { color:#006199; font-weight:bold; margin:4px 0;border:solid 1px #006199; padding:4px 12px; border-radius:5px; background:#cbecff;  }
+.form {border:solid 1px #ccc; padding:0px 4px; border-radius:5px; background:#c5c5c5; margin:4px 0;}
+.row { margin:4px 0 4px 0; border:solid 1px #ccc; padding:4px 4px; border-radius:5px; background:#F5F5F5; }
+.row small { display:inline-block; vertical-align:top; height:20px; line-height:20px; padding:2px 4px; font-size:14px;}
+.row label { display:inline-block; vertical-align:top; width:220px;  min-height:20px; line-height:20px; padding:2px 4px;}
+.row input[type="text"], .row input[type="password"] { display:inline-block; vertical-align:top; width:220px; height:18px; line-height:18px; padding:2px 4px; margin:0;font-size:14px; }
+.row select { display:inline-block; vertical-align:top; width:232px; height:24px; line-height:24px; padding:2px 4px; margin:0;font-size:14px; }
+.row textarea { display:inline-block; vertical-align:top; width:220px; height:80px; padding:2px 4px; margin:0;font-size:14px; }
+.row .el-rte textarea { width:100%; }
+.row input[type="submit"], .row input[type="button"] { height:28px; line-height:28px; width:232px; }
+#adTable { background:#EEE; border-collapse:collapse; }
+#adTable th,#adTable td { padding:2px 4px; border:solid 1px #ccc; font-size:14px; }#adTable td {background:#fff;}
+#adTable tbody tr:hover td { background:#FFC; }
+#uploadWrap { float:right; position:relative;}
+#file_upload  { position:absolute; right:5px; top:32px; z-index:99; }
+.uploadify-queue { position:absolute; right:5px; top:32px; z-index:102; width:240px; }
+#menusLeft { display:inline-block; vertical-align:top; width:242px;border: 1px solid #999;border-radius:5px; padding:8px; margin:0 4px 0 0;}
+#menusRight { display:inline-block; vertical-align:top; width:600px;border: 1px solid #999;border-radius:5px;padding:8px;}
+#underMenus { margin:44px 0 0 0; border:1px solid #999;border-radius:5px;padding:8px;}
+.placeholder {background-color: #FF0;width:450px;}
+.ui-nestedSortable-error {background:#f00;color:#8a1f11;}
+ol {margin: 0;padding: 0;padding-left: 30px;}
+ol.sortable, ol.sortable ol {margin: 0 0 0 35px; padding: 0;list-style-type: none;}
+ol.sortable {margin:0px 0;}
+.sortable li {margin:4px 0 4px;padding: 0;}
+.sortable li div.aseListItem  {border: 1px solid #999;border-radius:5px;padding:6px 8px;margin: 0;cursor: move;width:450px;background: #ddd; position:relative;}
+.sortable li div.editable { width:450px; } 
+.atodel { position:absolute; right:8px; top:5px;  }
+.atourl { position:absolute; right:32px; top:5px; }
+#item_url { width:260px;font-size:14px;}
+#confirm_delete_dialog { font-size:14px; }
+.legend { letter-spacing:2px; margin:8px 0; } 
+#addPages { background:#fff; max-height:180px; overflow:auto; margin:10px 0; }
+#menusLeft input[type="checkbox"] { display:inline; width:auto; }
+#menusLeft label { display:block; width:auto; }
+.noshow { display:none; }
+.set_theme { display:inline-block; vertical-align:top;width:120px; background:#fff; padding:8px; border: 1px solid #999;border-radius:5px; margin:0 8px 8px 0;}
+.row .set_theme label { display:static; vertical-align:top; width:auto;  height:auto; line-height:inherit; padding:0;}
+#shortCodes { position:absolute; width:170px; padding:10px; background:#FF9; border:solid 1px #FF3; border-radius:10px; right:-200px; top:0px; box-shadow:4px 4px 3px #CCC; }
+#shortCodes h3, #shortCodes p { padding:0; margin:0 0 4px 0; }
+.flag { float:right; margin:3px 4px 0 4px; }
+.row label.tinyLabel { width:40px; }.row label.smallLabel { width:80px; }.row label.mediumLabel { width:180px; }.row label.bigLabel { width:260px; }
+.ui-widget {font-size:14px; }
+.el-rte .toolbar .panel-format {width: 390px;}
