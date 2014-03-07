@@ -1,7 +1,8 @@
 tinycms
 =======
 
-TinyCMS <a href="http://www.tinycms.eu/">TinyCMS.eu</a>
+TinyCMS - <a href="http://www.tinycms.eu/">TinyCMS.eu</a>
+
 What is TinyCMS ?
 
 It’s the type of software that will save dozens of work hours when you are building a website. It is a CMS (Content Management Software) written in php, that tries to be as user friendly as possible, very smart and most importantly, extremely fast. Made for web-designers, the TinyCMS suite is easy to install and easy to extend. TinyCMS does not use data-bases, it’s storage mechanism are simple text files. This makes it very fast and very web hosting resource friendly. By installing TinyCMS you don’t have to worry about your website’s engine. You have an easy to use administrator interface and a single html file that you can edit as you wish to completely change the way your website looks.
