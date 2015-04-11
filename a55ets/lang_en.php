@@ -121,4 +121,5 @@
   'Your old password please' => '',
   'Your password is incorrect' => '',
   'Your password was changed. Please login again' => '',
+  'Change Password' => '',
 ); ?>
