@@ -15,6 +15,6 @@ define("PASS","21232f297a57a5a743894a0e4a801fc3");
 define("LANG","en");
 define("THEME_FOLDER","mad");
 $plugins=array("forms","gallery","mp3list","sliders","upcomingevents");
-$languages=array("en","ro","de");
+$languages=array("en","ro","de","ru","da");
 require "a55ets/tcClas5.php"; 
 ?>
