@@ -1108,7 +1108,7 @@ abstract class THelpers {
 		return (count($rc,COUNT_RECURSIVE)-count($rc))."<br />".print_r($rc,true);
 	}
 	public function slugify($text){ 
-		$text = preg_replace('~[^\\pL\d]+~u', '-', $text);		
+		$text = preg_replace('~[^\\pL\d_]+~u', '-', $text);		
 		$text = trim($text, '-');		
 		$text = iconv('utf-8', 'us-ascii//TRANSLIT', $text);		
 		$text = strtolower($text);		
