@@ -397,11 +397,10 @@ class TinyCMS extends THelpers {
 		$dirs=$this->assetDirs();
 		$ret='';
 		if ($this->isAdminLogged) {
-			$ret .= '<script type="text/javascript">var isAdminLogged = true;';
-			if ($this->AdminAction=="pages_form") {
-				if (isset($_GET['who'])) { $ret .= 'var isEditingPage=true;'; }
-				else { $ret .= 'var isCreatingPage=true;'; }
-			}
+			$ret='<script type="text/javascript">';
+			$ret .= 'var isAdminLogged = true;';
+			if ($this->AdminAction=="pages_form"&&!isset($_GET['who'])) { $ret .= 'var isCreatingPage=true;'; }
+			else { $ret .= 'var isCreatingPage=false;'; }
 			$ret .= '</script>' . "\n";
 		}
 		if ($this->isAdminZone) {
