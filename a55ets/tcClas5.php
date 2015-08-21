@@ -77,7 +77,12 @@ class TinyCMS extends THelpers {
 		$this->curl=($fp==DATA_FOLDER."public/404.madd"?"404".URL_ENDING:($cleanUrl?$cleanUrl:"index".URL_ENDING));
 		$this->csegments=explode(URL_SEPARATOR,str_replace(URL_ENDING,"",$this->curl));
 		$this->cpage=end($this->csegments);
-		if (count($this->csegments)==1) {
+		if (count($this->csegments) > 1 && $this->cpage == "index") {
+			array_pop($this->csegments);
+			$this->cpage=end($this->csegments)."/index";
+			$this->csegments[count($this->csegments)-1] = $this->cpage;
+		}
+		if (count($this->csegments)==1 || (count($this->csegments)==2 && $this->csegments[1] == "index")) {
 			if ($this->cpage<>"index") {
 				$homePage=json_decode($this->getFile((MULTI&&$this->curlang&&$this->curlang<>$languages[0]?str_replace("__","_".$this->curlang."_",DATA_FOLDER):DATA_FOLDER)."public/index.madd"));
 				$this->setCrumbs(array((MULTI?SR.$this->curlang.'/':SR)=>$homePage[0],"#"=>$this->ma["mt"]));
@@ -87,8 +92,13 @@ class TinyCMS extends THelpers {
 			$homePage=json_decode($this->getFile((MULTI&&$this->curlang&&$this->curlang<>$languages[0]?str_replace("__","_".$this->curlang."_",DATA_FOLDER):DATA_FOLDER)."public/index.madd"));			
 			$ar[(MULTI?SR.$this->curlang.'/':SR)]=$homePage[0];
 			for ($i=0;$i<count($this->csegments)-1;$i++) {
-				$c=json_decode($this->getFile((MULTI&&$this->curlang&&$this->curlang<>$languages[0]?str_replace("__","_".$this->curlang."_",DATA_FOLDER):DATA_FOLDER)."public/".$this->csegments[$i].".madd"));//TODO pe 3 nivele
-				$ar[SR.(MULTI&&$this->curlang?$this->curlang.'/':'').$this->csegments[$i].URL_ENDING]=$c[0];
+				$f = $this->csegments[$i];
+				$c=json_decode($this->getFile((MULTI&&$this->curlang&&$this->curlang<>$languages[0]?str_replace("__","_".$this->curlang."_",DATA_FOLDER):DATA_FOLDER)."public/".$f.".madd"));//TODO pe 3 nivele
+				if (!$c) {
+					$c=json_decode($this->getFile((MULTI&&$this->curlang&&$this->curlang<>$languages[0]?str_replace("__","_".$this->curlang."_",DATA_FOLDER):DATA_FOLDER)."public/".$f."/index.madd"));
+					if ($c) $f .= "/index";
+				}
+				$ar[SR.(MULTI&&$this->curlang?$this->curlang.'/':'').$f.URL_ENDING]=$c[0];
 			}
 			$ar["#"]=$this->ma["mt"];
 			$this->setCrumbs($ar);
@@ -194,6 +204,10 @@ class TinyCMS extends THelpers {
 						else $url=(substr($url,0,1)=="/"?substr(SR,0,-1):SR).$url;
 					}
 					$tempsegments=explode(URL_SEPARATOR,$model["u"]);
+					if (count($tempsegments) > 1 && end($tempsegments) == "index".URL_ENDING) {
+						array_pop($tempsegments);
+						$tempsegments[count($tempsegments)-1] = end($tempsegments)."/index".URL_ENDING;
+					}
 					$ret.='<li class="'.($i==count($m[$p])?"last":'').($i==1?"first":'').($this->cpage.URL_ENDING==end($tempsegments)?' active':'').'"><a href="'.$url.'"'.$target.'>'.$model["n"].'</a>';
 				}
 				$this->recursiveMenu($m,$model["id"],$l+1,$t);
