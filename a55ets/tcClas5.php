@@ -469,7 +469,7 @@ class TinyCMS extends THelpers {
 		else $AdminMenuF[]=_e("View site")."|http://".$_SERVER['HTTP_HOST'].SR;
 		if ($this->AdminAction=="pages_form"&&isset($_GET['who'])) 
 			$AdminMenuF[]=_e("View page")."|http://".$_SERVER['HTTP_HOST'].SR.(MULTI?$languages[0].'/':'').str_replace(".madd",URL_ENDING,$_GET['who']);
-		if (!isset($this->AdminAction)&&substr_compare($_GET['r'],URL_ENDING,-strlen(URL_ENDING))==0) {
+		if ($this->curl=="404".URL_ENDING&&!isset($this->AdminAction)&&substr_compare($_GET['r'],URL_ENDING,-strlen(URL_ENDING))==0) {
 			$AdminMenuF[]=_e("Create missing page")."|http://".$_SERVER['HTTP_HOST'].SR.(MULTI?$languages[0].'/':'').ADMIN."/pages_create&amp;who=".$_GET['r'];
 		}
 		$AdminMenu=array_merge($AdminMenuH,$this->amExtraItems,$AdminMenuF);
