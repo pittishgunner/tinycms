@@ -396,6 +396,14 @@ class TinyCMS extends THelpers {
 	private function getHead(){
 		$dirs=$this->assetDirs();
 		$ret='';
+		if ($this->isAdminLogged) {
+			$ret .= '<script type="text/javascript">var isAdminLogged = true;';
+			if ($this->AdminAction=="pages_form") {
+				if (isset($_GET['who'])) { $ret .= 'var isEditingPage=true;'; }
+				else { $ret .= 'var isCreatingPage=true;'; }
+			}
+			$ret .= '</script>' . "\n";
+		}
 		if ($this->isAdminZone) {
 			$ret.='<script type="text/javascript">var SR="'.SR.'";var ELI='.(file_exists("themes/".THEME_FOLDER."/css/elrte-inner.css")?'"'.SR.'themes/'.THEME_FOLDER.'/css/elrte-inner.css"':'false').';var lang="'.LANG.'"; var translations=new Array(); translations["save"]="'._e("Save").'"; translations["cancel"]="'._e("Cancel").'"; translations["delete"]="'._e("Delete").'";</script>'."\n";
 			foreach ($this->BeNeeds as $bn) {
