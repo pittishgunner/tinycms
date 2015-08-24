@@ -3,8 +3,8 @@
 define("DATA_FOLDER","__d4ta/");
 define("ADMIN","4dm1n");
 /*public constants*/
-define("BRAND",false);
-define("MULTI",false);
+define("BRAND",true);
+define("MULTI",true);
 define("MAKE_ABS_URLS", true);
 define("URL_SEPARATOR","/");
 define("URL_ENDING",".html");
@@ -17,6 +17,6 @@ define("LANG","en");
 define("THEME_FOLDER","mad");
 define("IMAGE_FOLDER",'themes/'.THEME_FOLDER.'/images/pages'); // relative to SR
 $plugins=array("forms","gallery","sliders");
-$languages=array("en");
+$languages=array("en","de");
 require "a55ets/tcClas5.php"; 
 ?>
