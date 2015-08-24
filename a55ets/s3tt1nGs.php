@@ -8,15 +8,15 @@ define("MULTI",true);
 define("MAKE_ABS_URLS", true);
 define("URL_SEPARATOR","/");
 define("URL_ENDING",".html");
-define("SR","/");
+define("SR","/tiny/");
 /*DO NOT PUT this to "true" on a live site, it will reveal important information to your visitors*/
-define("DEBUG",false);
+define("DEBUG",true);
 /*this is a MD5 Hash of the actual password, use online tools like http://www.md5hashgenerator.com to find it out.*/
 define("PASS","21232f297a57a5a743894a0e4a801fc3");
 define("LANG","en");
 define("THEME_FOLDER","mad");
 define("IMAGE_FOLDER",'themes/'.THEME_FOLDER.'/images/pages'); // relative to SR
-$plugins=array("forms","gallery","sliders");
-$languages=array("en","de");
+$plugins=array("forms","gallery","mp3list","sliders","upcomingevents");
+$languages=array("en","ru","de","ru","da");
 require "a55ets/tcClas5.php"; 
 ?>
