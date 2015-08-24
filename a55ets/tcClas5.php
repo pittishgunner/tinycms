@@ -77,7 +77,12 @@ class TinyCMS extends THelpers {
 		$this->curl=($fp==DATA_FOLDER."public/404.madd"?"404".URL_ENDING:($cleanUrl?$cleanUrl:"index".URL_ENDING));
 		$this->csegments=explode(URL_SEPARATOR,str_replace(URL_ENDING,"",$this->curl));
 		$this->cpage=end($this->csegments);
-		if (count($this->csegments)==1) {
+		if (count($this->csegments) > 1 && $this->cpage == "index") {
+			array_pop($this->csegments);
+			$this->cpage=end($this->csegments)."/index";
+			$this->csegments[count($this->csegments)-1] = $this->cpage;
+		}
+		if (count($this->csegments)==1 || (count($this->csegments)==2 && $this->csegments[1] == "index")) {
 			if ($this->cpage<>"index") {
 				$homePage=json_decode($this->getFile((MULTI&&$this->curlang&&$this->curlang<>$languages[0]?str_replace("__","_".$this->curlang."_",DATA_FOLDER):DATA_FOLDER)."public/index.madd"));
 				$this->setCrumbs(array((MULTI?SR.$this->curlang.'/':SR)=>$homePage[0],"#"=>$this->ma["mt"]));
@@ -87,8 +92,13 @@ class TinyCMS extends THelpers {
 			$homePage=json_decode($this->getFile((MULTI&&$this->curlang&&$this->curlang<>$languages[0]?str_replace("__","_".$this->curlang."_",DATA_FOLDER):DATA_FOLDER)."public/index.madd"));			
 			$ar[(MULTI?SR.$this->curlang.'/':SR)]=$homePage[0];
 			for ($i=0;$i<count($this->csegments)-1;$i++) {
-				$c=json_decode($this->getFile((MULTI&&$this->curlang&&$this->curlang<>$languages[0]?str_replace("__","_".$this->curlang."_",DATA_FOLDER):DATA_FOLDER)."public/".$this->csegments[$i].".madd"));//TODO pe 3 nivele
-				$ar[SR.(MULTI&&$this->curlang?$this->curlang.'/':'').$this->csegments[$i].URL_ENDING]=$c[0];
+				$f = $this->csegments[$i];
+				$c=json_decode($this->getFile((MULTI&&$this->curlang&&$this->curlang<>$languages[0]?str_replace("__","_".$this->curlang."_",DATA_FOLDER):DATA_FOLDER)."public/".$f.".madd"));//TODO pe 3 nivele
+				if (!$c) {
+					$c=json_decode($this->getFile((MULTI&&$this->curlang&&$this->curlang<>$languages[0]?str_replace("__","_".$this->curlang."_",DATA_FOLDER):DATA_FOLDER)."public/".$f."/index.madd"));
+					if ($c) $f .= "/index";
+				}
+				$ar[SR.(MULTI&&$this->curlang?$this->curlang.'/':'').$f.URL_ENDING]=$c[0];
 			}
 			$ar["#"]=$this->ma["mt"];
 			$this->setCrumbs($ar);
@@ -194,6 +204,10 @@ class TinyCMS extends THelpers {
 						else $url=(substr($url,0,1)=="/"?substr(SR,0,-1):SR).$url;
 					}
 					$tempsegments=explode(URL_SEPARATOR,$model["u"]);
+					if (count($tempsegments) > 1 && end($tempsegments) == "index".URL_ENDING) {
+						array_pop($tempsegments);
+						$tempsegments[count($tempsegments)-1] = end($tempsegments)."/index".URL_ENDING;
+					}
 					$ret.='<li class="'.($i==count($m[$p])?"last":'').($i==1?"first":'').($this->cpage.URL_ENDING==end($tempsegments)?' active':'').'"><a href="'.$url.'"'.$target.'>'.$model["n"].'</a>';
 				}
 				$this->recursiveMenu($m,$model["id"],$l+1,$t);
@@ -382,6 +396,14 @@ class TinyCMS extends THelpers {
 	private function getHead(){
 		$dirs=$this->assetDirs();
 		$ret='';
+		if ($this->isAdminLogged) {
+			$ret='<script type="text/javascript">';
+			$ret .= 'var isAdminLogged = true;';
+			if ($this->AdminAction=="pages_form"&&!isset($_GET['who'])) { $ret .= 'var isCreatingPage=true;'; }
+			else { $ret .= 'var isCreatingPage=false;'; }
+			$ret .= "var makeAbsoluteUrls=".(MAKE_ABS_URLS?'true':'false').';';
+			$ret .= '</script>' . "\n";
+		}
 		if ($this->isAdminZone) {
 			$ret.='<script type="text/javascript">var SR="'.SR.'";var ELI='.(file_exists("themes/".THEME_FOLDER."/css/elrte-inner.css")?'"'.SR.'themes/'.THEME_FOLDER.'/css/elrte-inner.css"':'false').';var lang="'.LANG.'"; var translations=new Array(); translations["save"]="'._e("Save").'"; translations["cancel"]="'._e("Cancel").'"; translations["delete"]="'._e("Delete").'";</script>'."\n";
 			foreach ($this->BeNeeds as $bn) {
@@ -448,7 +470,9 @@ class TinyCMS extends THelpers {
 		else $AdminMenuF[]=_e("View site")."|http://".$_SERVER['HTTP_HOST'].SR;
 		if ($this->AdminAction=="pages_form"&&isset($_GET['who'])) 
 			$AdminMenuF[]=_e("View page")."|http://".$_SERVER['HTTP_HOST'].SR.(MULTI?$languages[0].'/':'').str_replace(".madd",URL_ENDING,$_GET['who']);
-			
+		if ($this->curl=="404".URL_ENDING&&!isset($this->AdminAction)&&substr_compare($_GET['r'],URL_ENDING,-strlen(URL_ENDING))==0) {
+			$AdminMenuF[]=_e("Create missing page")."|http://".$_SERVER['HTTP_HOST'].SR.(MULTI?$languages[0].'/':'').ADMIN."/pages_create&amp;who=".$_GET['r'];
+		}
 		$AdminMenu=array_merge($AdminMenuH,$this->amExtraItems,$AdminMenuF);
 		$ret='<style type="text/css">#AdminMenu {position:fixed; top:10px; left:10px;}#AdminMenu .AdminMenu { border:solid 1px #ccc; background:#fff;border-radius:5px;box-shadow:0px 0px 3px 3px rgba(150, 150, 150, 0.25); }#AdminMenu .AdminMenu ul,.AdminMenu li { margin:0; padding:0; list-style:none; } #AdminMenu .AdminMenu li { position:relative; } .AdminMenu li a { font-family:Arial; font-size:14px; text-decoration:none;color:#f00; display:block; padding:6px 12px; width:130px; } #AdminMenu .AdminMenu li ul { display:none; position:absolute;background:#fff;border-radius:5px;box-shadow:0px 0px 3px 3px rgba(150, 150, 150, 0.25); left:154px; top:0px; }#AdminMenu .AdminMenu li ul li a {width:180px;}#AdminMenu .AdminMenu li:hover ul { display:block; } #AdminMenu .AdminMenu li.first a { '.(BRAND?'background-image:url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABYAAAAcCAYAAABlL09dAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyJpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuMy1jMDExIDY2LjE0NTY2MSwgMjAxMi8wMi8wNi0xNDo1NjoyNyAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENTNiAoV2luZG93cykiIHhtcE1NOkluc3RhbmNlSUQ9InhtcC5paWQ6N0NBQjQwNEI5ODdEMTFFMzgwNzNENUQ4MUJCMzIwODIiIHhtcE1NOkRvY3VtZW50SUQ9InhtcC5kaWQ6N0NBQjQwNEM5ODdEMTFFMzgwNzNENUQ4MUJCMzIwODIiPiA8eG1wTU06RGVyaXZlZEZyb20gc3RSZWY6aW5zdGFuY2VJRD0ieG1wLmlpZDo3Q0FCNDA0OTk4N0QxMUUzODA3M0Q1RDgxQkIzMjA4MiIgc3RSZWY6ZG9jdW1lbnRJRD0ieG1wLmRpZDo3Q0FCNDA0QTk4N0QxMUUzODA3M0Q1RDgxQkIzMjA4MiIvPiA8L3JkZjpEZXNjcmlwdGlvbj4gPC9yZGY6UkRGPiA8L3g6eG1wbWV0YT4gPD94cGFja2V0IGVuZD0iciI/PnefONoAAAOeSURBVHja1FZtiFRVGH7POfeee2dnXHeNFG39Yv2RFmwmWchCIKjgFwZR0C9DFKp/0f+IfkYgBAlCBVFYREGIf0TMzXXsQ1fxA2ORLTXdUWZ2vu6dO/fjnLf3zOzIrjNs49L+6MLDueedc5/3Pe953vcMR0RYCHBYoGfBiK1HDR9u/rhtEcbWtsF3j73Wu3H8C113ssbGCAkymAxkYzTziDMYzldhqFTrKuLFWsGn5dGXD3BMnSI3X5Nt83+Rio+4TNYVL6/2oltPB8yO3iDbKOE7wvB8id8kHGS0Kq7pTG5kIGCWTshmE15FgDMI7Di973w0rXMRm2g+ebhQxqw8tr4Hi2srIFTLLIh8t2LsBOX3FxoPka23MzEa4DOEbwhpRpo04FxBfC/dX8muCbXtQ8ISiABDobHaHycPNlSCdTtypcODXn1XTIfYpgoi2SQAv9UIT9FhR8i5cRRqSwSVZS4v1Pc92OTKIvPuL5J+3RK569CrsNdRKM3nCWdXsJPcrr6y5QW2fPEK34sKSlpemEkZZ64WXNbSLhvr61+2t+CptcnVFVHlEgvDEFBIMFHS8zvhj446zq9eerSwaimzlDpM0yco2umdEGgbuUDB98nA3fdkFsPgNtNczPz8NEF1zLFIlLbj5IiIkj2ESRErMOCJImINKcrtzziUKlULHgsL5G0W8aluVHGSsJ1wbVapMgV34iWZi3lekSye+dN9woVudXxtmvzMrF3lfXm+NmyRVJIZ5l8JpcepvEnCHmoGPwBj4OTL0FMuwmV80SniEk/AQ03/9PjdjYFH+n7dyRW/tKc8EBRoDgfcG2qoJlloVmjCyPzaJmIiavX95ORIs7PZqTH1EvJGRcFES2bz68fMiA7eJhwVpI7raqP0MU2+8DeyBa3CtcX8b5C3JISf39KDT97Vq0IL4hFKP/RIBX2pBO4U3fYC6fLRFOVBHzNiHJ7bscG9cc6PbPjq4nIo1iwY/bPvX4hNGE5Pc6TiAEnv1Iwac7Jwnnnn7NSz7zs3+ydO3FwJ2b/6gIoTUraeg5hKlfll4Cc/IwrVkIauBk0HjYvI5NLys7mJY6fvrd9q2WI8LVWOzNWOvaJFCrYDUCmAOEsXhYoapaubjWb2pSnsS5mUNB7TNH2+Jbt2YosI/RKw/CQwbwrApe0r6ohsrnNGI7WBaVGsIbhtxOGPH4ATGOK/qXatZvSsK/EYuWUIceNwcbot/m/+sPwjwAAexsIoWCJ6igAAAABJRU5ErkJggg==");':'').' background-repeat:no-repeat; background-position:left center; padding:6px 12px 6px 26px; width:116px; border-bottom:solid 1px #ccc; } #AdminMenu .AdminMenu li li.first a { background:#fff; padding:6px 12px;border:none; }.AdminMenu li a:hover, .AdminMenu li a.active{ background-color:#ccc; } #AdminMenu .AdminMenu li li.first a:hover, #AdminMenu .AdminMenu li li.first a.active  { background-color:#ccc; width:180px;}#AdminMenu .AdminMenu li li{white-space:nowrap;}</style>';
 		$ret.='<div class="AdminMenu">'.$this->makeMenuFromArray($AdminMenu,SR.ADMIN.'/','AdminMenuUL','first','last','active').'</div>';
@@ -567,7 +591,7 @@ class TinyCMS extends THelpers {
 						else {
 							//alert(data);
 							var editor = $("#editor").elrte()[0].elrte;
-							editor.selection.insertText(\'<img src="'.SR.'themes/'.THEME_FOLDER.'/images/pages/\'+data+\'" />\');
+							editor.selection.insertText(\'<img src="'.SR.IMAGE_FOLDER.'/\'+data+\'" />\');
 						}
 					}
 				});
@@ -575,6 +599,13 @@ class TinyCMS extends THelpers {
 		</script>';
 		return $ret;
 		
+	}
+	private function ActionAdmin_pages_create(){
+		$_POST['url']=str_replace(URL_ENDING, '', $_GET['who']);
+		$_POST['title']=$_GET['who'];
+		$_POST['sent']='yEs';
+		$_GET['who']='';
+		return $this->ActionAdmin_pages_form();
 	}
 	private function ActionAdmin_pages_delete(){ global $languages;
 		$this->setCrumbs(array(SR=>_e("Home"),SR.ADMIN.'/dash'=>_e("Admin"),SR.ADMIN.'/pages'=>_e("Manage Pages"),"#"=>_e("Page Deletion")));
@@ -603,7 +634,7 @@ class TinyCMS extends THelpers {
 	private function ActionAdmin_pages_clean(){ global $languages;
 		$this->setCrumbs(array(SR=>_e("Home"),SR.ADMIN.'/dash'=>_e("Admin"),SR.ADMIN.'/pages'=>_e("Manage Pages"),"#"=>_e("Page images cleanup")));
 		$ondisk=array();$inpages=array();
-		if (glob("themes/".THEME_FOLDER."/images/pages/*")) foreach (glob("themes/".THEME_FOLDER."/images/pages/*") as $f) $ondisk[]=str_replace("themes/".THEME_FOLDER."/images/pages/","",$f);
+		if (glob(IMAGE_FOLDER.'/*')) foreach (glob(IMAGE_FOLDER.'/*') as $f) $ondisk[]=str_replace(IMAGE_FOLDER.'/',"",$f);
 		$pages=glob_recursive(DATA_FOLDER."public/*.madd");
 		$sidebars=glob_recursive(DATA_FOLDER."private/*_sidebar.madd");
 		$both=array_merge($pages,$sidebars);
@@ -625,7 +656,7 @@ class TinyCMS extends THelpers {
 				$list = $dom->getElementsByTagName('img');
 				if ($list) foreach ($list as $_list) {
 					$src=$_list->getAttribute("src");
-					if (strstr($src,"themes/".THEME_FOLDER."/images/pages")) $inpages[]=str_replace(array(SR."themes/".THEME_FOLDER."/images/pages/","themes/".THEME_FOLDER."/images/pages/"),array(""),$src);
+					if (strstr($src,IMAGE_FOLDER)) $inpages[]=str_replace(array(SR.IMAGE_FOLDER.'/',IMAGE_FOLDER.'/'),array(""),$src);
 				}
 			}
 		}
@@ -634,7 +665,7 @@ class TinyCMS extends THelpers {
 		if (isset($_POST['noDelete'])) $this->redir("pages");		
 		if (isset($_POST['yesDelete'])&&!empty($dif)) { 
 			foreach ($dif as $d) {
-				unlink("themes/".THEME_FOLDER."/images/pages/".$d);
+				unlink(IMAGE_FOLDER.'/'.$d);
 			}
 			$_SESSION['infoMessage']=_e("Page Images cleaned up succesfully");
 			$this->redir("pages");			
@@ -643,7 +674,7 @@ class TinyCMS extends THelpers {
 			<div class="row error">'._e("The following images will be deleted. Are you sure you want to continue?").'</div>
 			<div style="border:solid 1px #ccc; padding:10px; margin:10px 0;background:#fff;">
 			<div style="height:220px; overflow:auto;">';
-			foreach ($dif as $d) $ret.='<img src="'.SR.'themes/'.THEME_FOLDER.'/images/pages/'.$d.'" width="90" style="float:left; margin:0 4px 4px 0;" />';
+			foreach ($dif as $d) $ret.='<img src="'.SR.IMAGE_FOLDER.'/'.$d.'" width="90" style="float:left; margin:0 4px 4px 0;" />';
 		$ret.='</div>
 			</div>
 			<div class="row"><input type="submit" name="yesDelete" value="'._e('Yes').'" /> <input type="submit" name="noDelete" value="'._e('No').'" /></div>
@@ -775,7 +806,7 @@ class TinyCMS extends THelpers {
 						else {
 							//alert(data);
 							var editor = $("#editor").elrte()[0].elrte;
-							editor.selection.insertText(\'<img src="'.SR.'themes/'.THEME_FOLDER.'/images/pages/\'+data+\'" />\');
+							editor.selection.insertText(\'<img src="'.SR.IMAGE_FOLDER.'/\'+data+\'" />\');
 						}
 					}
 				});
@@ -924,7 +955,7 @@ class TinyCMS extends THelpers {
 	}
 	/**/
 	private function AdminUpload(){
-		$targetFolder = 'themes/'.THEME_FOLDER.'/images/pages'; // Relative to the root
+		$targetFolder = IMAGE_FOLDER; // Relative to the root
 		if (!is_dir($targetFolder)) @mkdir($targetFolder);
 		$verifyToken = md5('uBQzQDBHYgEb+Fw09T(c39'.(isset($_POST['timestamp'])?$_POST['timestamp']:''));
 		
@@ -1094,7 +1125,7 @@ abstract class THelpers {
 		return (count($rc,COUNT_RECURSIVE)-count($rc))."<br />".print_r($rc,true);
 	}
 	public function slugify($text){ 
-		$text = preg_replace('~[^\\pL\d]+~u', '-', $text);		
+		$text = preg_replace('~[^\\pL\d_]+~u', '-', $text);		
 		$text = trim($text, '-');		
 		$text = iconv('utf-8', 'us-ascii//TRANSLIT', $text);		
 		$text = strtolower($text);		

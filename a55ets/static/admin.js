@@ -1,8 +1,8 @@
 $(document).ready(function(e) {
-	var opts = {cssClass : 'el-rte',height :450,lang:lang,toolbar  : 'maxi',cssfiles : [SR+'a55ets/static/e1rte/css/elrte-inner.css',(ELI?ELI:'')]}
+	var opts = {absoluteURLs: makeAbsoluteUrls,cssClass : 'el-rte',height :450,lang:lang,toolbar  : 'maxi',cssfiles : [SR+'a55ets/static/e1rte/css/elrte-inner.css',(ELI?ELI:'')]}
 	$('#editor').elrte(opts);
 	
-	if ($("#Page_url").length>0&&$("#Page_url").attr("readonly")!="readonly") {
+	if (isCreatingPage&&$("#Page_url").length>0&&$("#Page_url").attr("readonly")!="readonly") {
 		$("#Page_title").keyup(function(){
 			$("#Page_url").val(convertToSlug($(this).val()));
 		});

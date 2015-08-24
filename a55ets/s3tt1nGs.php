@@ -5,6 +5,7 @@ define("ADMIN","4dm1n");
 /*public constants*/
 define("BRAND",true);
 define("MULTI",true);
+define("MAKE_ABS_URLS", true);
 define("URL_SEPARATOR","/");
 define("URL_ENDING",".html");
 define("SR","/tiny/");
@@ -14,7 +15,8 @@ define("DEBUG",true);
 define("PASS","21232f297a57a5a743894a0e4a801fc3");
 define("LANG","en");
 define("THEME_FOLDER","mad");
+define("IMAGE_FOLDER",'themes/'.THEME_FOLDER.'/images/pages'); // relative to SR
 $plugins=array("forms","gallery","mp3list","sliders","upcomingevents");
-$languages=array("en","ro","de","ru","da");
+$languages=array("en","ru","de","ru","da");
 require "a55ets/tcClas5.php"; 
 ?>
