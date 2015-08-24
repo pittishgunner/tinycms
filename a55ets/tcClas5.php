@@ -471,7 +471,9 @@ class TinyCMS extends THelpers {
 		if ($this->AdminAction=="pages_form"&&isset($_GET['who'])) 
 			$AdminMenuF[]=_e("View page")."|http://".$_SERVER['HTTP_HOST'].SR.(MULTI?$languages[0].'/':'').str_replace(".madd",URL_ENDING,$_GET['who']);
 		if ($this->curl=="404".URL_ENDING&&!isset($this->AdminAction)&&substr_compare($_GET['r'],URL_ENDING,-strlen(URL_ENDING))==0) {
-			$AdminMenuF[]=_e("Create missing page")."|http://".$_SERVER['HTTP_HOST'].SR.(MULTI?$languages[0].'/':'').ADMIN."/pages_create&amp;who=".$_GET['r'];
+			$url=$_GET['r'];
+			if (MULTI) $url=preg_replace('/^'.$this->curlang.'\//','',$url);
+			$AdminMenuF[]=_e("Create missing page")."|http://".$_SERVER['HTTP_HOST'].SR.ADMIN."/pages_create&amp;who=".$url.(MULTI&&$this->curlang?'&lang='.$this->curlang:'');
 		}
 		$AdminMenu=array_merge($AdminMenuH,$this->amExtraItems,$AdminMenuF);
 		$ret='<style type="text/css">#AdminMenu {position:fixed; top:10px; left:10px;}#AdminMenu .AdminMenu { border:solid 1px #ccc; background:#fff;border-radius:5px;box-shadow:0px 0px 3px 3px rgba(150, 150, 150, 0.25); }#AdminMenu .AdminMenu ul,.AdminMenu li { margin:0; padding:0; list-style:none; } #AdminMenu .AdminMenu li { position:relative; } .AdminMenu li a { font-family:Arial; font-size:14px; text-decoration:none;color:#f00; display:block; padding:6px 12px; width:130px; } #AdminMenu .AdminMenu li ul { display:none; position:absolute;background:#fff;border-radius:5px;box-shadow:0px 0px 3px 3px rgba(150, 150, 150, 0.25); left:154px; top:0px; }#AdminMenu .AdminMenu li ul li a {width:180px;}#AdminMenu .AdminMenu li:hover ul { display:block; } #AdminMenu .AdminMenu li.first a { '.(BRAND?'background-image:url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABYAAAAcCAYAAABlL09dAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyJpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuMy1jMDExIDY2LjE0NTY2MSwgMjAxMi8wMi8wNi0xNDo1NjoyNyAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENTNiAoV2luZG93cykiIHhtcE1NOkluc3RhbmNlSUQ9InhtcC5paWQ6N0NBQjQwNEI5ODdEMTFFMzgwNzNENUQ4MUJCMzIwODIiIHhtcE1NOkRvY3VtZW50SUQ9InhtcC5kaWQ6N0NBQjQwNEM5ODdEMTFFMzgwNzNENUQ4MUJCMzIwODIiPiA8eG1wTU06RGVyaXZlZEZyb20gc3RSZWY6aW5zdGFuY2VJRD0ieG1wLmlpZDo3Q0FCNDA0OTk4N0QxMUUzODA3M0Q1RDgxQkIzMjA4MiIgc3RSZWY6ZG9jdW1lbnRJRD0ieG1wLmRpZDo3Q0FCNDA0QTk4N0QxMUUzODA3M0Q1RDgxQkIzMjA4MiIvPiA8L3JkZjpEZXNjcmlwdGlvbj4gPC9yZGY6UkRGPiA8L3g6eG1wbWV0YT4gPD94cGFja2V0IGVuZD0iciI/PnefONoAAAOeSURBVHja1FZtiFRVGH7POfeee2dnXHeNFG39Yv2RFmwmWchCIKjgFwZR0C9DFKp/0f+IfkYgBAlCBVFYREGIf0TMzXXsQ1fxA2ORLTXdUWZ2vu6dO/fjnLf3zOzIrjNs49L+6MLDueedc5/3Pe953vcMR0RYCHBYoGfBiK1HDR9u/rhtEcbWtsF3j73Wu3H8C113ssbGCAkymAxkYzTziDMYzldhqFTrKuLFWsGn5dGXD3BMnSI3X5Nt83+Rio+4TNYVL6/2oltPB8yO3iDbKOE7wvB8id8kHGS0Kq7pTG5kIGCWTshmE15FgDMI7Di973w0rXMRm2g+ebhQxqw8tr4Hi2srIFTLLIh8t2LsBOX3FxoPka23MzEa4DOEbwhpRpo04FxBfC/dX8muCbXtQ8ISiABDobHaHycPNlSCdTtypcODXn1XTIfYpgoi2SQAv9UIT9FhR8i5cRRqSwSVZS4v1Pc92OTKIvPuL5J+3RK569CrsNdRKM3nCWdXsJPcrr6y5QW2fPEK34sKSlpemEkZZ64WXNbSLhvr61+2t+CptcnVFVHlEgvDEFBIMFHS8zvhj446zq9eerSwaimzlDpM0yco2umdEGgbuUDB98nA3fdkFsPgNtNczPz8NEF1zLFIlLbj5IiIkj2ESRErMOCJImINKcrtzziUKlULHgsL5G0W8aluVHGSsJ1wbVapMgV34iWZi3lekSye+dN9woVudXxtmvzMrF3lfXm+NmyRVJIZ5l8JpcepvEnCHmoGPwBj4OTL0FMuwmV80SniEk/AQ03/9PjdjYFH+n7dyRW/tKc8EBRoDgfcG2qoJlloVmjCyPzaJmIiavX95ORIs7PZqTH1EvJGRcFES2bz68fMiA7eJhwVpI7raqP0MU2+8DeyBa3CtcX8b5C3JISf39KDT97Vq0IL4hFKP/RIBX2pBO4U3fYC6fLRFOVBHzNiHJ7bscG9cc6PbPjq4nIo1iwY/bPvX4hNGE5Pc6TiAEnv1Iwac7Jwnnnn7NSz7zs3+ydO3FwJ2b/6gIoTUraeg5hKlfll4Cc/IwrVkIauBk0HjYvI5NLys7mJY6fvrd9q2WI8LVWOzNWOvaJFCrYDUCmAOEsXhYoapaubjWb2pSnsS5mUNB7TNH2+Jbt2YosI/RKw/CQwbwrApe0r6ohsrnNGI7WBaVGsIbhtxOGPH4ATGOK/qXatZvSsK/EYuWUIceNwcbot/m/+sPwjwAAexsIoWCJ6igAAAABJRU5ErkJggg==");':'').' background-repeat:no-repeat; background-position:left center; padding:6px 12px 6px 26px; width:116px; border-bottom:solid 1px #ccc; } #AdminMenu .AdminMenu li li.first a { background:#fff; padding:6px 12px;border:none; }.AdminMenu li a:hover, .AdminMenu li a.active{ background-color:#ccc; } #AdminMenu .AdminMenu li li.first a:hover, #AdminMenu .AdminMenu li li.first a.active  { background-color:#ccc; width:180px;}#AdminMenu .AdminMenu li li{white-space:nowrap;}</style>';
@@ -601,11 +603,18 @@ class TinyCMS extends THelpers {
 		
 	}
 	private function ActionAdmin_pages_create(){
-		$_POST['url']=str_replace(URL_ENDING, '', $_GET['who']);
-		$_POST['title']=$_GET['who'];
-		$_POST['sent']='yEs';
-		$_GET['who']='';
-		return $this->ActionAdmin_pages_form();
+		global $languages;
+		if (isset($_GET['who'])&&$_GET['who']) $who=$_GET['who']; else $this->redir("pages");
+		if (file_exists(DATA_FOLDER."public/".str_replace(URL_ENDING, '.madd', $who))) {
+			$this->redir("pages_form&who=".str_replace(URL_ENDING, '.madd', $who)."&lang=".$_GET['lang']);
+		} else {
+			$_POST['url']=str_replace(URL_ENDING, '', $who);
+			$_POST['title']=$who;
+			$_POST['sent']='yEs';
+			$_GET['who']='';
+			$_GET['lang']='';
+			return $this->ActionAdmin_pages_form();
+		}
 	}
 	private function ActionAdmin_pages_delete(){ global $languages;
 		$this->setCrumbs(array(SR=>_e("Home"),SR.ADMIN.'/dash'=>_e("Admin"),SR.ADMIN.'/pages'=>_e("Manage Pages"),"#"=>_e("Page Deletion")));
