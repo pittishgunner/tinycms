@@ -1,5 +1,5 @@
 $(document).ready(function(e) {
-	var opts = {absoluteURLs: false,cssClass : 'el-rte',height :450,lang:lang,toolbar  : 'maxi',cssfiles : [SR+'a55ets/static/e1rte/css/elrte-inner.css',(ELI?ELI:'')]}
+	var opts = {absoluteURLs: makeAbsoluteUrls,cssClass : 'el-rte',height :450,lang:lang,toolbar  : 'maxi',cssfiles : [SR+'a55ets/static/e1rte/css/elrte-inner.css',(ELI?ELI:'')]}
 	$('#editor').elrte(opts);
 	
 	if (isCreatingPage&&$("#Page_url").length>0&&$("#Page_url").attr("readonly")!="readonly") {

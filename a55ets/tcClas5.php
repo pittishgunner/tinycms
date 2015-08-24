@@ -401,6 +401,7 @@ class TinyCMS extends THelpers {
 			$ret .= 'var isAdminLogged = true;';
 			if ($this->AdminAction=="pages_form"&&!isset($_GET['who'])) { $ret .= 'var isCreatingPage=true;'; }
 			else { $ret .= 'var isCreatingPage=false;'; }
+			$ret .= "var makeAbsoluteUrls=".(MAKE_ABS_URLS?'true':'false').';';
 			$ret .= '</script>' . "\n";
 		}
 		if ($this->isAdminZone) {
@@ -590,7 +591,7 @@ class TinyCMS extends THelpers {
 						else {
 							//alert(data);
 							var editor = $("#editor").elrte()[0].elrte;
-							editor.selection.insertText(\'<img src="'.SR.'themes/'.THEME_FOLDER.'/images/pages/\'+data+\'" />\');
+							editor.selection.insertText(\'<img src="'.SR.IMAGE_FOLDER.'/\'+data+\'" />\');
 						}
 					}
 				});
@@ -633,7 +634,7 @@ class TinyCMS extends THelpers {
 	private function ActionAdmin_pages_clean(){ global $languages;
 		$this->setCrumbs(array(SR=>_e("Home"),SR.ADMIN.'/dash'=>_e("Admin"),SR.ADMIN.'/pages'=>_e("Manage Pages"),"#"=>_e("Page images cleanup")));
 		$ondisk=array();$inpages=array();
-		if (glob("themes/".THEME_FOLDER."/images/pages/*")) foreach (glob("themes/".THEME_FOLDER."/images/pages/*") as $f) $ondisk[]=str_replace("themes/".THEME_FOLDER."/images/pages/","",$f);
+		if (glob(IMAGE_FOLDER.'/*')) foreach (glob(IMAGE_FOLDER.'/*') as $f) $ondisk[]=str_replace(IMAGE_FOLDER.'/',"",$f);
 		$pages=glob_recursive(DATA_FOLDER."public/*.madd");
 		$sidebars=glob_recursive(DATA_FOLDER."private/*_sidebar.madd");
 		$both=array_merge($pages,$sidebars);
@@ -655,7 +656,7 @@ class TinyCMS extends THelpers {
 				$list = $dom->getElementsByTagName('img');
 				if ($list) foreach ($list as $_list) {
 					$src=$_list->getAttribute("src");
-					if (strstr($src,"themes/".THEME_FOLDER."/images/pages")) $inpages[]=str_replace(array(SR."themes/".THEME_FOLDER."/images/pages/","themes/".THEME_FOLDER."/images/pages/"),array(""),$src);
+					if (strstr($src,IMAGE_FOLDER)) $inpages[]=str_replace(array(SR.IMAGE_FOLDER.'/',IMAGE_FOLDER.'/'),array(""),$src);
 				}
 			}
 		}
@@ -664,7 +665,7 @@ class TinyCMS extends THelpers {
 		if (isset($_POST['noDelete'])) $this->redir("pages");		
 		if (isset($_POST['yesDelete'])&&!empty($dif)) { 
 			foreach ($dif as $d) {
-				unlink("themes/".THEME_FOLDER."/images/pages/".$d);
+				unlink(IMAGE_FOLDER.'/'.$d);
 			}
 			$_SESSION['infoMessage']=_e("Page Images cleaned up succesfully");
 			$this->redir("pages");			
@@ -673,7 +674,7 @@ class TinyCMS extends THelpers {
 			<div class="row error">'._e("The following images will be deleted. Are you sure you want to continue?").'</div>
 			<div style="border:solid 1px #ccc; padding:10px; margin:10px 0;background:#fff;">
 			<div style="height:220px; overflow:auto;">';
-			foreach ($dif as $d) $ret.='<img src="'.SR.'themes/'.THEME_FOLDER.'/images/pages/'.$d.'" width="90" style="float:left; margin:0 4px 4px 0;" />';
+			foreach ($dif as $d) $ret.='<img src="'.SR.IMAGE_FOLDER.'/'.$d.'" width="90" style="float:left; margin:0 4px 4px 0;" />';
 		$ret.='</div>
 			</div>
 			<div class="row"><input type="submit" name="yesDelete" value="'._e('Yes').'" /> <input type="submit" name="noDelete" value="'._e('No').'" /></div>
@@ -805,7 +806,7 @@ class TinyCMS extends THelpers {
 						else {
 							//alert(data);
 							var editor = $("#editor").elrte()[0].elrte;
-							editor.selection.insertText(\'<img src="'.SR.'themes/'.THEME_FOLDER.'/images/pages/\'+data+\'" />\');
+							editor.selection.insertText(\'<img src="'.SR.IMAGE_FOLDER.'/\'+data+\'" />\');
 						}
 					}
 				});
@@ -954,7 +955,7 @@ class TinyCMS extends THelpers {
 	}
 	/**/
 	private function AdminUpload(){
-		$targetFolder = 'themes/'.THEME_FOLDER.'/images/pages'; // Relative to the root
+		$targetFolder = IMAGE_FOLDER; // Relative to the root
 		if (!is_dir($targetFolder)) @mkdir($targetFolder);
 		$verifyToken = md5('uBQzQDBHYgEb+Fw09T(c39'.(isset($_POST['timestamp'])?$_POST['timestamp']:''));
 		
