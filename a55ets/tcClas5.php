@@ -62,12 +62,17 @@ class TinyCMS extends THelpers {
 			$this->isAdminZone=true;
 		} else {
 			if (MULTI&&$lang<>$languages[0]) {
-				$fp=substr($fp,3); $cleanUrl=substr($cleanUrl,3); 
-				if (file_exists(str_replace("__","_".$lang."_",DATA_FOLDER)."public/".$fp)) $fp=str_replace("__","_".$lang."_",DATA_FOLDER)."public/".$fp;
+				$fp=substr($fp,3); $cleanUrl=substr($cleanUrl,3);
+				$langp = str_replace("__","_".$lang."_",DATA_FOLDER)."public/";
+				$_GET['fp']=$fp;
+				if (file_exists($langp.$fp)&&is_file($langp.$fp)) $fp=$langp.$fp;
+				else if (file_exists($langp.$fp)&&file_exists($langp.$fp."/index.madd")) { header("Location: ".SR.preg_replace('#/+$#','',$_GET['r'])."/index".URL_ENDING); exit(); }
 				else { header('HTTP/1.0 404 Not Found'); $fp=DATA_FOLDER."public/404.madd"; }
 			} else {
+				$langp=DATA_FOLDER."public/";
 				if (MULTI&&$lang==$languages[0]) { $fp=substr($fp,3); $cleanUrl=substr($cleanUrl,3); }
-				if (file_exists(DATA_FOLDER."public/".$fp)) $fp=DATA_FOLDER."public/".$fp;
+				if (file_exists($langp.$fp)&&is_file($langp.$fp)) $fp=$langp.$fp;
+				else if (file_exists($langp.$fp)&&file_exists($langp.$fp."/index.madd")) { header("Location: ".SR.preg_replace('#/+$#','',$_GET['r'])."/index".URL_ENDING); exit(); }
 				else { header('HTTP/1.0 404 Not Found'); $fp=DATA_FOLDER."public/404.madd"; }
 			}
 		}
