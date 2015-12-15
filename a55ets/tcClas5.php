@@ -206,7 +206,7 @@ class TinyCMS extends THelpers {
 						if ($_SERVER['HTTP_HOST']<>$parsed['host']) $target=' target="_blank"';
 					} else {
 						if (MULTI&&$this->curlang) $url=(substr($url,0,1)=="/"?substr(SR,0,-1):SR.$this->curlang.'/').$url;
-						else $url=(substr($url,0,1)=="/"?substr(SR,0,-1):SR).$url;
+						else $url=(substr($url,0,1)=="/"?substr(SR,0,-1):(strstr($url,'mailto:')||strstr($url,'tel:')?"":SR)).$url;
 					}
 					$tempsegments=explode(URL_SEPARATOR,$model["u"]);
 					if (count($tempsegments) > 1 && end($tempsegments) == "index".URL_ENDING) {
