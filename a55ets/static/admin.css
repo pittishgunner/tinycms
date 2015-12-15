@@ -1,4 +1,4 @@
-#AdminWrapper {  font-family:Arial; font-size:14px; width:988px; }
+#AdminWrapper {  font-family:Arial; font-size:14px; width:988px;margin:0 auto;}
 #AdminWrapper a{color:#f00;text-decoration:none; }
 .error { color:#f00; font-weight:bold; margin:4px 0;border:solid 1px #f00; padding:4px 12px; border-radius:5px; background:#ffd5d5;  }
 .success { color:#339900; font-weight:bold; margin:4px 0;border:solid 1px #339900; padding:4px 12px; border-radius:5px; background:#e7ffdb;  }
