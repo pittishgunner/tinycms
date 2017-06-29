@@ -1,6 +1,6 @@
 <?php $t= array (
   'Are you sure you want to delete this gallery' => 'Möchten Sie diese Galerie wirklich löschen?',
-  'Automatically resize images ?' => 'Automatische Größenanpassung der Bilder',
+  'Automatically resize images ?' => 'Automatische Größenanpassung der Bilder?',
   'Clean Unused Files' => 'Nicht benötigte Dateien löschen',
   'Create new gallery' => 'Neue Galerie erstellen',
   'Description' => 'Beschreibung',
@@ -18,8 +18,8 @@
   'Maximum width' => 'Maximale Breite',
   'No galleries were found' => 'Keine Galerie gefunden',
   'Save gallery' => 'Galerie speichern',
-  'The following files will be deleted. Are you sure you want to continue?' => 'Folgende Dateien werden gelöscht! Möchten Sie fortfahren?',
-  'The gallery was copied to the remaining untranslated languages' => '',
+  'The following files will be deleted. Are you sure you want to continue?' => 'Folgende Dateien werden gelöscht. Möchten Sie fortfahren?',
+  'The gallery was copied to the remaining untranslated languages' => 'Galerie wurde auf die verbliebenen unübersetzten Sprachen kopiert',
   'The gallery was saved' => 'Galerie wurde gespeichert',
   'This gallery does not exist' => 'Diese Galerie existiert nicht',
   'Use thumbnails?' => '',
